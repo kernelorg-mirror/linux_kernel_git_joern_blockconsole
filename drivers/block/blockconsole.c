@@ -10,6 +10,7 @@
 #include <linux/kref.h>
 #include <linux/kthread.h>
 #include <linux/mm.h>
+#include <linux/moduleparam.h>
 #include <linux/mount.h>
 #include <linux/random.h>
 #include <linux/slab.h>
@@ -542,6 +543,14 @@ static void bcon_create_fuzzy(const char *name)
 		kfree(longname);
 	}
 }
+
+static int bcon_setup(const char *val, struct kernel_param *kp)
+{
+	bcon_create_fuzzy(val);
+	return 0;
+}
+
+module_param_call(device, bcon_setup, NULL, NULL, 0200);
 
 static DEFINE_SPINLOCK(device_lock);
 static char scanned_devices[80];
